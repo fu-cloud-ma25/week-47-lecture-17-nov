@@ -3,6 +3,8 @@ import middy from '@middy/core';
 import { createError } from '@middy/util';
 import { errorHandler } from "../../../middlewares/errorHandler.mjs";
 import { deleteTodo, getTodoById } from "../../../services/todos.mjs";
+import { authenticate } from "../../../middlewares/authenticate.mjs";
+import { authorize } from "../../../middlewares/authorization.mjs";
 
 export const handler = middy(async (event) => {
   const { id } = event.pathParameters;
@@ -13,4 +15,6 @@ export const handler = middy(async (event) => {
   const deletedTodo = await deleteTodo(id);
 
   return sendResponse(200, { message : 'Todo deleted successfully!', todo: deletedTodo });
-}).use(errorHandler());
+}).use(authenticate())
+  .use(authorize())
+  .use(errorHandler());

@@ -1,6 +1,6 @@
 import { sendResponse } from '../responses/index.mjs';
 
-export const errorHandler = () => ({
+export const errorHandler = () => ( {
     onError: (handler) => {
         const error = handler.error;
         console.error("ERROR:", error);

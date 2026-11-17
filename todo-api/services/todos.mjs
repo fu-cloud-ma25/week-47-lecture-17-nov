@@ -8,13 +8,14 @@ import {
 import { createError } from '@middy/util';
 
 // Get todos
-export const getTodos = async () => {
+export const getTodos = async (username) => {
     try {
         const command = new QueryCommand({
             TableName: 'TodoDB',
-            KeyConditionExpression: 'PK = :pk',
-            ExpressionAttributeValues: {
-                ':pk': 'TODO'
+            IndexName: 'GSI1',
+            KeyConditionExpression: 'GSI1PK = :user',
+            ExpressionAttributeValues : {
+                ':user' : `USER#${username}`
             }
         });
 
@@ -52,7 +53,9 @@ export const addTodo = async (todo) => {
             Item: {
                 PK: 'TODO',
                 SK: todo.id,
-                ...todo
+                ...todo,
+                GSI1PK: `USER#${todo.createdBy}`,
+                GSI1SK: `TODO#${todo.id}`
             }
         });
 
